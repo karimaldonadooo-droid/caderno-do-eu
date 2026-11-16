@@ -9,92 +9,46 @@
 </head>
 <body>
 <header class="top"><div class="brand">ELA EM EXPANSÃO <small>Kari Maldonado · Terapeuta Integrativa</small></div><button id="logout" class="quiet hidden">Sair</button></header>
-<section class="hero-art" aria-label="Arte de abertura do Caderno do Eu">
-  <div class="hero-copy">
-    <p class="hero-kicker">ELA EM EXPANSÃO · KARI MALDONADO</p>
-    <h1>Caderno do Eu</h1>
-    <p>Uma jornada de 30 dias para florescer de dentro para fora.</p>
-    <span class="hero-gold-line" aria-hidden="true"></span>
-  </div>
-</section>
+<section class="hero-art" aria-label="Arte de abertura do Caderno do Eu"><div class="hero-copy"><p class="hero-kicker">ELA EM EXPANSÃO · KARI MALDONADO</p><h1>Caderno do Eu</h1><p>Uma jornada de 30 dias para florescer de dentro para fora.</p><span class="hero-gold-line" aria-hidden="true"></span></div></section>
 <main>
 <section id="login" class="panel auth">
-  <p class="eyebrow">UMA JORNADA DE 30 DIAS</p><h1>Caderno do Eu</h1>
-  <p class="muted">Um espaço de pausa, escuta e autoconhecimento. Um dia de cada vez.</p>
-  <label>E-mail<input id="email" type="email" autocomplete="username" placeholder="seu e-mail"></label>
-  <label>Senha<input id="password" type="password" autocomplete="current-password" placeholder="sua senha"></label>
-  <button id="loginBtn" class="primary">Entrar na minha jornada</button>
-  <p id="loginMsg" class="notice">Seu acesso é fornecido pela terapeuta. Se ainda não recebeu seus dados, entre em contato com ela.</p>
+<p class="eyebrow">UMA JORNADA DE 30 DIAS</p><h1>Caderno do Eu</h1><p class="muted">Um espaço de pausa, escuta e autoconhecimento. Um dia de cada vez.</p>
+<label>E-mail<input id="email" type="email" autocomplete="username" placeholder="seu e-mail"></label>
+<label>Senha<input id="password" type="password" autocomplete="current-password" placeholder="sua senha"></label>
+<button id="loginBtn" class="primary">Entrar na minha jornada</button><p id="loginMsg" class="notice">Seu acesso é fornecido pela terapeuta. Se ainda não recebeu seus dados, entre em contato com ela.</p>
 </section>
 <section id="app" class="hidden">
-  <section id="assessmentGate" class="panel hidden">
-    <p class="eyebrow">SEU PONTO DE PARTIDA</p>
-    <h2 id="assessmentTitle">Antes de começar, vamos olhar para você?</h2>
-    <p class="muted" id="assessmentIntro">Responda com sinceridade e sem julgamento. Não existe resposta certa ou errada. Esta é uma fotografia da sua percepção neste momento.</p>
-    <div id="assessmentQuestions"></div>
-    <button id="saveAssessment" class="primary">Salvar minha avaliação</button>
-    <p id="assessmentMsg" class="notice"></p>
-  </section>
-  <div id="journeyShell">
-  <div class="welcome"><div><p class="eyebrow">SEU ESPAÇO DE CUIDADO</p><h1 id="hello">Bem-vinda</h1><p class="muted">Permita-se florescer no seu tempo.</p></div><div class="counter"><strong id="doneCount">0</strong><span>de 30 dias</span></div></div>
-  <div class="progress"><div id="progressBar"></div></div>
-  <nav class="tabs">
-    <button class="tab active" data-tab="journey">Minha jornada</button>
-    <button class="tab" data-tab="cards">Cartas da Expansão</button>
-    <button class="tab" data-tab="evolution">Minha evolução</button>
-    <button class="tab" data-tab="history">Meu diário</button>
-    <button class="tab hidden" id="adminTab" data-tab="admin">Painel da terapeuta</button>
-  </nav>
-  <section id="journey" class="tabview">
-    <article class="panel">
-      <div class="dayline"><span id="phase" class="pill">FASE 1 · EU ME RECONHEÇO</span><span id="dayLabel" class="muted">DIA 1 DE 30</span></div>
-      <h2 id="dayTitle">O encontro comigo</h2><p id="dayIntro" class="muted">Hoje é um convite para chegar até você, sem pressa e sem julgamentos.</p>
-      <h3>Reflexão do dia</h3><p id="question">Como estou chegando a este momento da minha vida?</p>
-      <label>Como estou me sentindo hoje?
-        <select id="mood"><option value="5">Muito bem</option><option value="4">Bem</option><option value="3" selected>Nem bem, nem mal</option><option value="2">Difícil</option><option value="1">Muito difícil</option></select>
-      </label>
-      <label>O que percebo no meu corpo?<textarea id="body" rows="2" placeholder="Sensações, energia, respiração..."></textarea></label>
-      <label>O que essa reflexão despertou em mim?<textarea id="reflection" rows="4" placeholder="Escreva livremente. Este espaço é seu."></textarea></label>
-      <label>Uma pequena atitude que quero praticar hoje<textarea id="next" rows="2" placeholder="Algo possível e gentil comigo."></textarea></label>
-      <button id="saveEntry" class="primary">Salvar meu dia</button><p id="saveMsg" class="notice"></p>
-    </article>
-    <article class="card-of-day"><p class="eyebrow">CARTA SUGERIDA PARA HOJE · DIA <span id="cardNum">1</span></p><h2 id="cardTitle">Acolhimento</h2><p id="cardText">Eu posso me receber exatamente como estou hoje. Não preciso ter todas as respostas para começar.</p><p class="muted" id="cardPractice">Prática: coloque a mão no coração e respire com gentileza por um minuto.</p><button class="secondary" id="openDeck">Escolher uma carta</button></article>
-    <div class="daynav"><button id="prevDay" class="secondary">Dia anterior</button><button id="nextDay" class="secondary">Próximo dia</button></div>
-  </section>
-  <section id="cards" class="tabview hidden">
-    <article class="panel">
-      <p class="eyebrow">UM MOMENTO DE INTUIÇÃO</p><h2>Escolha sua Carta da Expansão</h2>
-      <p class="muted">Respire, escolha uma carta que chame sua atenção e toque nela para revelar a mensagem. Você pode escolher uma carta por dia.</p>
-      <div id="cardDeck" class="card-deck"></div>
-      <article id="revealedCard" class="revealed-card hidden">
-        <p class="eyebrow">SUA CARTA</p><h2 id="chosenTitle"></h2><p id="chosenMessage"></p>
-        <p class="muted"><strong>Pequena prática:</strong> <span id="chosenPractice"></span></p>
-        <label>O que essa carta despertou em mim?<textarea id="cardReflection" rows="3" placeholder="Registre sua percepção..."></textarea></label>
-        <button id="saveCardReflection" class="primary">Salvar minha reflexão</button><p id="cardSaveMsg" class="notice"></p>
-      </article>
-    </article>
-  </section>
-  <section id="evolution" class="tabview hidden">
-    <article class="panel">
-      <p class="eyebrow">SEU CAMINHO, NO SEU RITMO</p><h2>Minha evolução</h2>
-      <p class="muted">Compare sua percepção no início e ao final da jornada. As notas são autorrelatos reflexivos, não representam diagnóstico ou medida clínica.</p>
-      <h3>Meu ponto de partida e meu florescer</h3>
-      <div class="chart-wrap"><canvas id="assessmentChart" width="760" height="340" aria-label="Comparação das cinco dimensões antes e depois da jornada"></canvas></div>
-      <div class="chart-legend"><span>● Início</span><span>● Final (após 30 dias)</span></div>
-      <p class="muted" id="assessmentChartNote">A avaliação final ficará disponível após concluir os 30 dias.</p>
-      <hr class="soft-rule">
-      <h3>Meu bem-estar ao longo dos dias</h3>
-      <p class="muted">Suas marcações diárias de 1 a 5.</p>
-      <div class="chart-wrap"><canvas id="moodChart" width="760" height="300" aria-label="Gráfico das marcações de bem-estar"></canvas></div>
-      <div class="chart-legend"><span>1 · Muito difícil</span><span>3 · Neutro</span><span>5 · Muito bem</span></div>
-      <h3>Minha jornada concluída</h3><div class="milestones" id="milestones"></div>
-    </article>
-  </section>
-  <section id="history" class="tabview hidden"><article class="panel"><h2>Meu diário</h2><p class="muted">Suas anotações ficam privadas e vinculadas à sua conta.</p><div id="entries"></div></article></section>
-  <section id="admin" class="tabview hidden"><article class="panel"><h2>Acompanhamento das participantes</h2><p class="muted">Visualize registros compartilhados conforme o consentimento informado.</p><div id="adminEntries"></div></article></section>
-  <p class="disclaimer">O Caderno do Eu é uma ferramenta de reflexão e autocuidado. Não substitui acompanhamento psicológico, médico ou outros cuidados profissionais. Você pode pular qualquer atividade que gere desconforto.</p>
-  </div>
+<section id="assessmentGate" class="panel hidden">
+<p class="eyebrow">SEU PONTO DE PARTIDA</p><h2 id="assessmentTitle">Antes de começar, vamos olhar para você?</h2>
+<p class="muted" id="assessmentIntro">Leia cada frase e escolha a resposta que mais combina com o que você sente hoje. Não existe resposta certa ou errada.</p>
+<div id="assessmentQuestions"></div><button id="saveAssessment" class="primary">Salvar minha avaliação</button><p id="assessmentMsg" class="notice"></p>
 </section>
-</main><footer>© ELA EM EXPANSÃO · Kari Maldonado</footer>
-<script src="app.js"></script>
+<div id="journeyShell" class="hidden">
+<div class="welcome"><div><p class="eyebrow">SEU ESPAÇO DE CUIDADO</p><h1 id="hello">Bem-vinda</h1><p class="muted">Permita-se florescer no seu tempo.</p></div><div class="counter"><strong id="doneCount">0</strong><span>de 30 dias</span></div></div>
+<div class="progress"><div id="progressBar"></div></div>
+<nav class="tabs">
+<button class="tab active" data-tab="journey">Minha jornada</button><button class="tab" data-tab="cards">Cartas da Expansão</button><button class="tab" data-tab="evolution">Minha evolução</button><button class="tab" data-tab="history">Meu diário</button><button class="tab hidden" id="adminTab" data-tab="admin">Painel da terapeuta</button>
+</nav>
+<section id="journey" class="tabview"><article class="panel">
+<div class="dayline"><span id="phase" class="pill">FASE 1 · EU ME RECONHEÇO</span><span id="dayLabel" class="muted">DIA 1 DE 30</span></div>
+<h2 id="dayTitle">O encontro comigo</h2><p id="dayIntro" class="muted">Hoje é um convite para chegar até você, sem pressa e sem julgamentos.</p>
+<h3>Reflexão do dia</h3><p id="question">Como estou chegando a este momento da minha vida?</p>
+<label>Como estou me sentindo hoje?<select id="mood"><option value="5">Muito bem</option><option value="4">Bem</option><option value="3" selected>Nem bem, nem mal</option><option value="2">Difícil</option><option value="1">Muito difícil</option></select></label>
+<label>O que percebo no meu corpo?<textarea id="body" rows="2" placeholder="Sensações, energia, respiração..."></textarea></label>
+<label>O que essa reflexão despertou em mim?<textarea id="reflection" rows="4" placeholder="Escreva livremente. Este espaço é seu."></textarea></label>
+<label>Uma pequena atitude que quero praticar hoje<textarea id="next" rows="2" placeholder="Algo possível e gentil comigo."></textarea></label>
+<button id="saveEntry" class="primary">Salvar meu dia</button><p id="saveMsg" class="notice"></p>
+</article>
+<article class="card-of-day"><p class="eyebrow">CARTA SUGERIDA PARA HOJE · DIA <span id="cardNum">1</span></p><h2 id="cardTitle">Acolhimento</h2><p id="cardText">Eu posso me receber exatamente como estou hoje.</p><p class="muted" id="cardPractice"></p><button class="secondary" id="openDeck">Escolher uma carta</button></article>
+<div class="daynav"><button id="prevDay" class="secondary">Dia anterior</button><button id="nextDay" class="secondary">Próximo dia</button></div>
+</section>
+<section id="cards" class="tabview hidden"><article class="panel"><p class="eyebrow">UM MOMENTO DE INTUIÇÃO</p><h2>Escolha sua Carta da Expansão</h2><p class="muted">Respire, escolha uma carta e toque nela para revelar a mensagem.</p><div id="cardDeck" class="card-deck"></div>
+<article id="revealedCard" class="revealed-card hidden"><p class="eyebrow">SUA CARTA</p><h2 id="chosenTitle"></h2><p id="chosenMessage"></p><p class="muted"><strong>Pequena prática:</strong> <span id="chosenPractice"></span></p><label>O que essa carta despertou em mim?<textarea id="cardReflection" rows="3"></textarea></label><button id="saveCardReflection" class="primary">Salvar minha reflexão</button><p id="cardSaveMsg" class="notice"></p></article>
+</article></section>
+<section id="evolution" class="tabview hidden"><article class="panel"><p class="eyebrow">SEU CAMINHO, NO SEU RITMO</p><h2>Minha evolução</h2><p class="muted">Esta comparação mostra sua percepção pessoal, não é diagnóstico ou medida clínica.</p><h3>Meu ponto de partida e meu florescer</h3><div class="chart-wrap"><canvas id="assessmentChart" width="760" height="340"></canvas></div><div class="chart-legend"><span>● Início</span><span>● Final (após 30 dias)</span></div><p class="muted" id="assessmentChartNote"></p><hr class="soft-rule"><h3>Meu bem-estar ao longo dos dias</h3><div class="chart-wrap"><canvas id="moodChart" width="760" height="300"></canvas></div><div class="chart-legend"><span>1 · Muito difícil</span><span>3 · Neutro</span><span>5 · Muito bem</span></div><h3>Minha jornada concluída</h3><div class="milestones" id="milestones"></div></article></section>
+<section id="history" class="tabview hidden"><article class="panel"><h2>Meu diário</h2><p class="muted">Suas anotações ficam privadas e vinculadas à sua conta.</p><div id="entries"></div></article></section>
+<section id="admin" class="tabview hidden"><article class="panel"><h2>Acompanhamento das participantes</h2><p class="muted">Visualize registros compartilhados conforme o consentimento informado.</p><div id="adminEntries"></div></article></section>
+<p class="disclaimer">O Caderno do Eu é uma ferramenta de reflexão e autocuidado. Não substitui acompanhamento psicológico, médico ou outros cuidados profissionais. Você pode pular qualquer atividade que gere desconforto.</p>
+</div></section></main><footer>© ELA EM EXPANSÃO · Kari Maldonado</footer>
+<script src="app.js"></script><script src="assessment-fix.js"></script>
 </body></html>

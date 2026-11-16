@@ -1,0 +1,7 @@
+
+/* Avaliação simplificada: quatro opções legíveis */
+.scale-options.scale-four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.scale-four .scale-option{display:flex;align-items:center;justify-content:center;gap:7px;min-height:58px;padding:10px 6px}
+.scale-four .scale-option input{margin:0;flex:0 0 auto}
+.scale-four .scale-option span{display:inline;font:13px Arial,sans-serif;color:#526b59}
+@media(max-width:620px){.scale-options.scale-four{grid-template-columns:repeat(2,minmax(0,1fr))}}
