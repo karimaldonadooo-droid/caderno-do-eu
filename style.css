@@ -15,3 +15,44 @@
 /* Avaliação de entrada e comparação final */
 .assessment-group{padding:16px 0;border-bottom:1px solid #e8e5dc}.assessment-group h3{margin:4px 0 12px;color:#637c66}.assessment-question{border:0;padding:0;margin:16px 0}.assessment-question legend{font:15px/1.5 Arial;color:#4f5e50;margin-bottom:10px}.scale-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.scale-option{margin:0;background:#f2f1e9;border:1px solid #e0dfd4;border-radius:10px;padding:9px 4px;text-align:center;cursor:pointer}.scale-option input{width:auto;margin:0 0 5px;accent-color:#637c66}.scale-option span{display:block;font:18px Georgia;color:#526b59}.scale-option small{font:10px Arial;color:#898b7e}.soft-rule{border:0;border-top:1px solid #e8e5dc;margin:24px 0}.chart-wrap canvas#assessmentChart{min-width:520px;height:auto}
 @media(max-width:560px){.scale-options{gap:4px}.scale-option{padding:8px 2px}.scale-option small{font-size:8px}}
+
+
+/* Identidade visual colorida inspirada nas sete cores dos chakras */
+:root{
+ --chakra-red:#c94c59;--chakra-orange:#e58a36;--chakra-yellow:#e2c342;
+ --chakra-green:#65a477;--chakra-blue:#5795c8;--chakra-indigo:#7770b5;--chakra-violet:#a783bd;
+ --ink:#39483f;--paper:#fffdf8;
+}
+body{background:linear-gradient(125deg,#fbf0ec 0%,#f8f1e4 22%,#f3f4e8 44%,#edf4f1 66%,#f1edf7 100%);color:var(--ink)}
+.top{background:linear-gradient(100deg,#f7e4e2,#f8eadb,#f7f1d8,#e6f0e6,#e4eef7,#ece8f7);border-bottom:1px solid #ddd8ce;position:relative}
+.top:after{content:"";position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--chakra-red),var(--chakra-orange),var(--chakra-yellow),var(--chakra-green),var(--chakra-blue),var(--chakra-indigo),var(--chakra-violet))}
+main{position:relative}
+.panel{background:rgba(255,253,248,.94);border-color:#e5ded3}
+h1{color:#536e5b}
+.tabs{padding:5px;border-radius:16px;background:rgba(255,255,255,.55)}
+.tab{border-color:#dedbd2;background:rgba(255,255,255,.55)}
+.tab.active{background:linear-gradient(110deg,var(--chakra-green),#6e9c9a);color:#fff;border-color:transparent}
+.primary{background:linear-gradient(100deg,#668e70,#668e9b);box-shadow:0 4px 12px #668e7030}
+.secondary{background:linear-gradient(110deg,#f8e8e5,#f9eee0,#f5f1dc);color:#685d55;border:1px solid #e6dcd0}
+input:focus,textarea:focus,select:focus{outline:2px solid #8eb7a0;outline-offset:1px}
+.progress{background:#e8e5dd}
+.progress div{background:linear-gradient(90deg,var(--chakra-red),var(--chakra-orange),var(--chakra-yellow),var(--chakra-green),var(--chakra-blue),var(--chakra-indigo),var(--chakra-violet))}
+#phase{background:#f1e7e2;color:#875d54;border:1px solid #ead8d1}
+body[data-phase="1"] #phase{background:#f7e3e2;color:#a33e4b}
+body[data-phase="2"] #phase{background:#f9eadb;color:#ad682b}
+body[data-phase="3"] #phase{background:#e5f0e6;color:#477b56}
+body[data-phase="4"] #phase{background:#eee8f6;color:#7560a2}
+body[data-phase="1"] .card-of-day{background:linear-gradient(125deg,#fff5f1,#f8e8e5)}
+body[data-phase="2"] .card-of-day{background:linear-gradient(125deg,#fff7ed,#f8eddf)}
+body[data-phase="3"] .card-of-day{background:linear-gradient(125deg,#f4faf1,#e7f1e5)}
+body[data-phase="4"] .card-of-day{background:linear-gradient(125deg,#f7f2fb,#ece8f6)}
+.deck-card:nth-child(7n+1){background:linear-gradient(145deg,#fff9f7,#f8e6e5)}
+.deck-card:nth-child(7n+2){background:linear-gradient(145deg,#fffaf4,#f8eadb)}
+.deck-card:nth-child(7n+3){background:linear-gradient(145deg,#fffdf3,#f6f0d9)}
+.deck-card:nth-child(7n+4){background:linear-gradient(145deg,#fbfff9,#e8f1e7)}
+.deck-card:nth-child(7n+5){background:linear-gradient(145deg,#f8fcff,#e6eff7)}
+.deck-card:nth-child(7n+6){background:linear-gradient(145deg,#faf9ff,#ebe9f6)}
+.deck-card:nth-child(7n){background:linear-gradient(145deg,#fdfaff,#f0eaf6)}
+.revealed-card{background:linear-gradient(125deg,#fff5e9,#f3eaf7,#e9f2e9);border-color:#ded8e7}
+.milestone.reached{background:linear-gradient(120deg,#e8f1e6,#e7eef7);border-color:#c7d8c7}
+@media(max-width:560px){.top{padding-top:16px;padding-bottom:20px}}

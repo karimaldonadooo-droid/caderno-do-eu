@@ -102,6 +102,7 @@ function showAssessment(stage){
 }
 function phaseIndex(d){return d<=7?0:d<=15?1:d<=23?2:3}
 function renderDay(){
+ document.body.dataset.phase=String(phaseIndex(day)+1);
  $("phase").textContent=phases[phaseIndex(day)];$("dayLabel").textContent=`DIA ${day} DE 30`;$("dayTitle").textContent=titles[day-1];$("question").textContent=questions[day-1];$("cardNum").textContent=day;$("cardTitle").textContent=cards[day-1][0];$("cardText").textContent=cards[day-1][1];$("cardPractice").textContent="Prática: "+cards[day-1][2];
  const e=saved[day];$("mood").value=e?.mood_score||3;$("body").value=e?.body_awareness||"";$("reflection").value=e?.reflection||"";$("next").value=e?.next_step||"";$("saveMsg").textContent=e?"Você já registrou este dia. Pode atualizar suas anotações.":"";
  $("prevDay").disabled=day===1;$("nextDay").disabled=day===30;
