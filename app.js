@@ -73,7 +73,33 @@ const cards = [
 ["Futuro","Posso escrever meu futuro com esperança e também com flexibilidade.","Escreva uma mensagem para você daqui a seis meses."],
 ["Florescer","Meu caminho continua. Posso reconhecer o que floresceu e seguir no meu tempo.","Celebre sua presença nesta jornada."]
 ];
-let user=null, profile=null, day=1, saved={}, chosenCard=null, cardNotes={};
+let user=null, profile=null, day=1, saved={}, chosenCard=null, cardNotes={}, assessments={baseline:null,final:null};
+const assessmentItems=[
+ {dimension:"Emoções",items:["Consigo reconhecer e nomear o que estou sentindo.","Consigo acolher minhas emoções sem me julgar imediatamente."]},
+ {dimension:"Autoestima",items:["Reconheço qualidades e capacidades em mim.","Trato a mim mesma com respeito e gentileza."]},
+ {dimension:"Limites e escolhas",items:["Consigo perceber e expressar minhas necessidades.","Sinto que posso fazer escolhas respeitando meus limites."]},
+ {dimension:"Autocuidado e corpo",items:["Percebo os sinais do meu corpo e procuro respeitá-los.","Consigo incluir atitudes de cuidado na minha rotina."]},
+ {dimension:"Propósito e perspectivas",items:["Tenho clareza sobre valores que são importantes para mim.","Consigo perceber desejos ou possibilidades que me motivam."]}
+];
+const scaleLabels=["1 · Ainda não me reconheço nisso","2 · Raramente","3 · Às vezes","4 · Muitas vezes","5 · Isso me representa bastante"];
+function assessmentMarkup(){return assessmentItems.map((group,gi)=>`<section class="assessment-group"><h3>${group.dimension}</h3>${group.items.map((q,qi)=>{const id=`a${gi*2+qi}`;return `<fieldset class="assessment-question"><legend>${q}</legend><div class="scale-options">${scaleLabels.map((label,i)=>`<label class="scale-option"><input type="radio" name="${id}" value="${i+1}"><span>${i+1}</span><small>${i===0?"Discordo":i===4?"Concordo":""}</small></label>`).join("")}</div></fieldset>`}).join("")}</section>`).join("")}
+function showAssessment(stage){
+ const gate=$("assessmentGate"),shell=$("journeyShell");gate.classList.remove("hidden");shell.classList.add("hidden");
+ $("assessmentTitle").textContent=stage==="baseline"?"Antes de começar, vamos olhar para você?":"Você chegou ao fim dos 30 dias. Como se percebe agora?";
+ $("assessmentIntro").textContent=stage==="baseline"?"Responda pensando em como você se sente hoje. Não existe resposta certa ou errada; esta é apenas sua percepção inicial.":"Responda às mesmas perguntas considerando como você se percebe agora. Compare com seu ponto de partida com gentileza, sem cobrança por uma mudança específica.";
+ $("assessmentQuestions").innerHTML=assessmentMarkup();
+ if(assessments[stage]?.answers){Object.entries(assessments[stage].answers).forEach(([k,v])=>{const input=document.querySelector(`input[name="${k}"][value="${v}"]`);if(input)input.checked=true})}
+ $("assessmentMsg").textContent="";
+ $("saveAssessment").onclick=async()=>{
+  const answers={};for(let i=0;i<10;i++){const chosen=document.querySelector(`input[name="a${i}"]:checked`);if(!chosen){$("assessmentMsg").textContent="Responda às 10 afirmações para continuar. Se alguma não fizer sentido, escolha a opção que mais se aproxima da sua percepção.";return}answers[`a${i}`]=Number(chosen.value)}
+  const scores={};assessmentItems.forEach((g,gi)=>{scores[g.dimension]=(answers[`a${gi*2}`]+answers[`a${gi*2+1}`])/2});
+  $("saveAssessment").disabled=true;$("assessmentMsg").textContent="Salvando sua avaliação...";
+  const {error}=await db.from("caderno_assessments").upsert({user_id:user.id,stage,answers,dimension_scores:scores,completed_at:new Date().toISOString()},{onConflict:"user_id,stage"});
+  $("saveAssessment").disabled=false;
+  if(error){$("assessmentMsg").textContent="Não foi possível salvar. Tente novamente ou avise a terapeuta.";return}
+  assessments[stage]={answers,dimension_scores:scores};gate.classList.add("hidden");shell.classList.remove("hidden");renderAssessmentChart();
+ };
+}
 function phaseIndex(d){return d<=7?0:d<=15?1:d<=23?2:3}
 function renderDay(){
  $("phase").textContent=phases[phaseIndex(day)];$("dayLabel").textContent=`DIA ${day} DE 30`;$("dayTitle").textContent=titles[day-1];$("question").textContent=questions[day-1];$("cardNum").textContent=day;$("cardTitle").textContent=cards[day-1][0];$("cardText").textContent=cards[day-1][1];$("cardPractice").textContent="Prática: "+cards[day-1][2];
@@ -85,7 +111,9 @@ async function refresh(){
  $("hello").textContent=p?.full_name?`Olá, ${p.full_name.split(" ")[0]}`:"Bem-vinda à sua jornada";
  $("adminTab").classList.toggle("hidden",p?.role!=="admin");
  const {data}=await db.from("caderno_entries").select("*").eq("user_id",user.id).order("day_number");saved={};(data||[]).forEach(x=>saved[x.day_number]=x);
- const count=Object.keys(saved).length;$("doneCount").textContent=count;$("progressBar").style.width=(count/30*100)+"%";renderDay();renderHistory();renderDeck();renderChart();
+ const {data:assessData}=await db.from("caderno_assessments").select("stage,answers,dimension_scores,completed_at").eq("user_id",user.id);assessments={baseline:null,final:null};(assessData||[]).forEach(a=>assessments[a.stage]=a);
+ const count=Object.keys(saved).length;$("doneCount").textContent=count;$("progressBar").style.width=(count/30*100)+"%";renderDay();renderHistory();renderDeck();renderChart();renderAssessmentChart();
+ if(!assessments.baseline)showAssessment("baseline");else if(count>=30&&!assessments.final)showAssessment("final");else{$("assessmentGate").classList.add("hidden");$("journeyShell").classList.remove("hidden")}
 }
 function renderHistory(){const el=$("entries");el.innerHTML="";Object.values(saved).sort((a,b)=>a.day_number-b.day_number).forEach(e=>{const d=document.createElement("article");d.className="entry";d.innerHTML=`<strong>Dia ${e.day_number} · ${titles[e.day_number-1]}</strong><p>${escapeHtml(e.reflection||"Sem reflexão registrada.")}</p><small>${new Date(e.updated_at||e.created_at).toLocaleDateString("pt-BR")}</small>`;el.appendChild(d)});if(!el.children.length)el.textContent="Suas reflexões aparecerão aqui depois que você salvar o primeiro dia."}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -110,6 +138,14 @@ $("saveCardReflection").onclick=async()=>{
  $("cardSaveMsg").textContent=error?"Não foi possível salvar esta reflexão.":"Reflexão da carta salva junto ao registro do dia.";
  if(!error)await refresh();
 };
+function renderAssessmentChart(){
+ const canvas=$("assessmentChart");if(!canvas)return;const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
+ const names=assessmentItems.map(x=>x.dimension),left=170,right=28,top=24,bottom=24,plotW=w-left-right,rowH=(h-top-bottom)/5;
+ ctx.font="13px Arial";ctx.fillStyle="#687565";ctx.strokeStyle="#e5e6dc";
+ for(let v=1;v<=5;v++){const x=left+(v-1)*plotW/4;ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,h-bottom);ctx.stroke();ctx.fillText(String(v),x-4,h-6)}
+ names.forEach((name,i)=>{const y=top+i*rowH+rowH/2;ctx.fillStyle="#596657";ctx.fillText(name,left-155,y+4);const a=assessments.baseline?.dimension_scores?.[name];const b=assessments.final?.dimension_scores?.[name];if(a!=null){ctx.fillStyle="#b48b55";ctx.fillRect(left,y-13,(a-1)*plotW/4,9)}if(b!=null){ctx.fillStyle="#729779";ctx.fillRect(left,y+1,(b-1)*plotW/4,9)}});
+ const note=$("assessmentChartNote");if(note)note.textContent=assessments.final?"Comparação das suas respostas no início e ao final da jornada.":"Este é seu ponto de partida. A comparação final será mostrada quando você concluir os 30 dias e responder novamente.";
+}
 function renderChart(){
  const canvas=$("moodChart");if(!canvas)return;const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
  const left=48,right=18,top=20,bottom=42,cw=w-left-right,ch=h-top-bottom;
@@ -123,6 +159,6 @@ function renderChart(){
  ctx.fillStyle="#77816f";ctx.font="12px Arial";[0,6,14,22,29].forEach(i=>ctx.fillText(String(i+1),x(i)-5,h-12));
  const m=$("milestones");if(m){m.innerHTML="";[7,15,23,30].forEach((n,i)=>{const done=Object.keys(saved).filter(k=>Number(k)<=n).length>=n;const d=document.createElement("div");d.className="milestone"+(done?" reached":"");d.innerHTML=`<strong>${n} dias</strong><small>${["Reconhecer","Compreender","Acolher","Expandir"][i]}</small>`;m.appendChild(d)})}
 }
-document.querySelectorAll(".tab").forEach(b=>b.onclick=async()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".tabview").forEach(x=>x.classList.add("hidden"));$(b.dataset.tab).classList.remove("hidden");if(b.dataset.tab==="admin")await loadAdmin();if(b.dataset.tab==="evolution")renderChart()});
+document.querySelectorAll(".tab").forEach(b=>b.onclick=async()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".tabview").forEach(x=>x.classList.add("hidden"));$(b.dataset.tab).classList.remove("hidden");if(b.dataset.tab==="admin")await loadAdmin();if(b.dataset.tab==="evolution"){renderChart();renderAssessmentChart()}});
 async function loadAdmin(){const el=$("adminEntries");el.textContent="Carregando registros...";const {data,error}=await db.from("caderno_entries").select("*,caderno_profiles(full_name,email)").order("updated_at",{ascending:false}).limit(200);if(error){el.textContent="Acesso administrativo não configurado ou sem permissão.";return}el.innerHTML="";(data||[]).forEach(e=>{const a=document.createElement("article");a.className="entry";a.innerHTML=`<strong>${escapeHtml(e.caderno_profiles?.full_name||e.caderno_profiles?.email||"Participante")} · Dia ${e.day_number}</strong><p>${escapeHtml(e.reflection||"")}</p><small>${new Date(e.updated_at||e.created_at).toLocaleString("pt-BR")}</small>`;el.appendChild(a)});if(!el.children.length)el.textContent="Ainda não há registros."}
 db.auth.getSession().then(async({data})=>{if(data.session){user=data.session.user;$("login").classList.add("hidden");$("app").classList.remove("hidden");$("logout").classList.remove("hidden");await refresh()}});

@@ -19,6 +19,15 @@
   <p id="loginMsg" class="notice">Seu acesso é fornecido pela terapeuta. Se ainda não recebeu seus dados, entre em contato com ela.</p>
 </section>
 <section id="app" class="hidden">
+  <section id="assessmentGate" class="panel hidden">
+    <p class="eyebrow">SEU PONTO DE PARTIDA</p>
+    <h2 id="assessmentTitle">Antes de começar, vamos olhar para você?</h2>
+    <p class="muted" id="assessmentIntro">Responda com sinceridade e sem julgamento. Não existe resposta certa ou errada. Esta é uma fotografia da sua percepção neste momento.</p>
+    <div id="assessmentQuestions"></div>
+    <button id="saveAssessment" class="primary">Salvar minha avaliação</button>
+    <p id="assessmentMsg" class="notice"></p>
+  </section>
+  <div id="journeyShell">
   <div class="welcome"><div><p class="eyebrow">SEU ESPAÇO DE CUIDADO</p><h1 id="hello">Bem-vinda</h1><p class="muted">Permita-se florescer no seu tempo.</p></div><div class="counter"><strong id="doneCount">0</strong><span>de 30 dias</span></div></div>
   <div class="progress"><div id="progressBar"></div></div>
   <nav class="tabs">
@@ -60,7 +69,14 @@
   <section id="evolution" class="tabview hidden">
     <article class="panel">
       <p class="eyebrow">SEU CAMINHO, NO SEU RITMO</p><h2>Minha evolução</h2>
-      <p class="muted">Acompanhe suas próprias marcações de bem-estar ao longo dos dias. Este gráfico é apenas um registro subjetivo, não uma avaliação clínica.</p>
+      <p class="muted">Compare sua percepção no início e ao final da jornada. As notas são autorrelatos reflexivos, não representam diagnóstico ou medida clínica.</p>
+      <h3>Meu ponto de partida e meu florescer</h3>
+      <div class="chart-wrap"><canvas id="assessmentChart" width="760" height="340" aria-label="Comparação das cinco dimensões antes e depois da jornada"></canvas></div>
+      <div class="chart-legend"><span>● Início</span><span>● Final (após 30 dias)</span></div>
+      <p class="muted" id="assessmentChartNote">A avaliação final ficará disponível após concluir os 30 dias.</p>
+      <hr class="soft-rule">
+      <h3>Meu bem-estar ao longo dos dias</h3>
+      <p class="muted">Suas marcações diárias de 1 a 5.</p>
       <div class="chart-wrap"><canvas id="moodChart" width="760" height="300" aria-label="Gráfico das marcações de bem-estar"></canvas></div>
       <div class="chart-legend"><span>1 · Muito difícil</span><span>3 · Neutro</span><span>5 · Muito bem</span></div>
       <h3>Minha jornada concluída</h3><div class="milestones" id="milestones"></div>
@@ -69,6 +85,7 @@
   <section id="history" class="tabview hidden"><article class="panel"><h2>Meu diário</h2><p class="muted">Suas anotações ficam privadas e vinculadas à sua conta.</p><div id="entries"></div></article></section>
   <section id="admin" class="tabview hidden"><article class="panel"><h2>Acompanhamento das participantes</h2><p class="muted">Visualize registros compartilhados conforme o consentimento informado.</p><div id="adminEntries"></div></article></section>
   <p class="disclaimer">O Caderno do Eu é uma ferramenta de reflexão e autocuidado. Não substitui acompanhamento psicológico, médico ou outros cuidados profissionais. Você pode pular qualquer atividade que gere desconforto.</p>
+  </div>
 </section>
 </main><footer>© ELA EM EXPANSÃO · Kari Maldonado</footer>
 <script src="app.js"></script>
