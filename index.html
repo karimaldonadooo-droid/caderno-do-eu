@@ -21,7 +21,13 @@
 <section id="app" class="hidden">
   <div class="welcome"><div><p class="eyebrow">SEU ESPAÇO DE CUIDADO</p><h1 id="hello">Bem-vinda</h1><p class="muted">Permita-se florescer no seu tempo.</p></div><div class="counter"><strong id="doneCount">0</strong><span>de 30 dias</span></div></div>
   <div class="progress"><div id="progressBar"></div></div>
-  <nav class="tabs"><button class="tab active" data-tab="journey">Minha jornada</button><button class="tab" data-tab="history">Meu diário</button><button class="tab hidden" id="adminTab" data-tab="admin">Painel da terapeuta</button></nav>
+  <nav class="tabs">
+    <button class="tab active" data-tab="journey">Minha jornada</button>
+    <button class="tab" data-tab="cards">Cartas da Expansão</button>
+    <button class="tab" data-tab="evolution">Minha evolução</button>
+    <button class="tab" data-tab="history">Meu diário</button>
+    <button class="tab hidden" id="adminTab" data-tab="admin">Painel da terapeuta</button>
+  </nav>
   <section id="journey" class="tabview">
     <article class="panel">
       <div class="dayline"><span id="phase" class="pill">FASE 1 · EU ME RECONHEÇO</span><span id="dayLabel" class="muted">DIA 1 DE 30</span></div>
@@ -35,8 +41,30 @@
       <label>Uma pequena atitude que quero praticar hoje<textarea id="next" rows="2" placeholder="Algo possível e gentil comigo."></textarea></label>
       <button id="saveEntry" class="primary">Salvar meu dia</button><p id="saveMsg" class="notice"></p>
     </article>
-    <article class="card-of-day"><p class="eyebrow">CARTA DA EXPANSÃO · DIA <span id="cardNum">1</span></p><h2 id="cardTitle">Acolhimento</h2><p id="cardText">Eu posso me receber exatamente como estou hoje. Não preciso ter todas as respostas para começar.</p><p class="muted" id="cardPractice">Prática: coloque a mão no coração e respire com gentileza por um minuto.</p></article>
+    <article class="card-of-day"><p class="eyebrow">CARTA SUGERIDA PARA HOJE · DIA <span id="cardNum">1</span></p><h2 id="cardTitle">Acolhimento</h2><p id="cardText">Eu posso me receber exatamente como estou hoje. Não preciso ter todas as respostas para começar.</p><p class="muted" id="cardPractice">Prática: coloque a mão no coração e respire com gentileza por um minuto.</p><button class="secondary" id="openDeck">Escolher uma carta</button></article>
     <div class="daynav"><button id="prevDay" class="secondary">Dia anterior</button><button id="nextDay" class="secondary">Próximo dia</button></div>
+  </section>
+  <section id="cards" class="tabview hidden">
+    <article class="panel">
+      <p class="eyebrow">UM MOMENTO DE INTUIÇÃO</p><h2>Escolha sua Carta da Expansão</h2>
+      <p class="muted">Respire, escolha uma carta que chame sua atenção e toque nela para revelar a mensagem. Você pode escolher uma carta por dia.</p>
+      <div id="cardDeck" class="card-deck"></div>
+      <article id="revealedCard" class="revealed-card hidden">
+        <p class="eyebrow">SUA CARTA</p><h2 id="chosenTitle"></h2><p id="chosenMessage"></p>
+        <p class="muted"><strong>Pequena prática:</strong> <span id="chosenPractice"></span></p>
+        <label>O que essa carta despertou em mim?<textarea id="cardReflection" rows="3" placeholder="Registre sua percepção..."></textarea></label>
+        <button id="saveCardReflection" class="primary">Salvar minha reflexão</button><p id="cardSaveMsg" class="notice"></p>
+      </article>
+    </article>
+  </section>
+  <section id="evolution" class="tabview hidden">
+    <article class="panel">
+      <p class="eyebrow">SEU CAMINHO, NO SEU RITMO</p><h2>Minha evolução</h2>
+      <p class="muted">Acompanhe suas próprias marcações de bem-estar ao longo dos dias. Este gráfico é apenas um registro subjetivo, não uma avaliação clínica.</p>
+      <div class="chart-wrap"><canvas id="moodChart" width="760" height="300" aria-label="Gráfico das marcações de bem-estar"></canvas></div>
+      <div class="chart-legend"><span>1 · Muito difícil</span><span>3 · Neutro</span><span>5 · Muito bem</span></div>
+      <h3>Minha jornada concluída</h3><div class="milestones" id="milestones"></div>
+    </article>
   </section>
   <section id="history" class="tabview hidden"><article class="panel"><h2>Meu diário</h2><p class="muted">Suas anotações ficam privadas e vinculadas à sua conta.</p><div id="entries"></div></article></section>
   <section id="admin" class="tabview hidden"><article class="panel"><h2>Acompanhamento das participantes</h2><p class="muted">Visualize registros compartilhados conforme o consentimento informado.</p><div id="adminEntries"></div></article></section>
