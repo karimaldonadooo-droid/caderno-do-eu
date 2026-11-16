@@ -56,3 +56,21 @@ body[data-phase="4"] .card-of-day{background:linear-gradient(125deg,#f7f2fb,#ece
 .revealed-card{background:linear-gradient(125deg,#fff5e9,#f3eaf7,#e9f2e9);border-color:#ded8e7}
 .milestone.reached{background:linear-gradient(120deg,#e8f1e6,#e7eef7);border-color:#c7d8c7}
 @media(max-width:560px){.top{padding-top:16px;padding-bottom:20px}}
+
+/* Identidade visual premium: arte botânica + chakras */
+.hero-art{
+  width:100%;
+  height:clamp(145px,22vw,255px);
+  background-image:linear-gradient(90deg,rgba(255,250,242,.06),rgba(255,250,242,.02)),url('hero-ela.png');
+  background-size:cover;
+  background-position:center 43%;
+  border-bottom:1px solid rgba(177,139,85,.28);
+  box-shadow:0 8px 28px rgba(88,73,54,.08);
+}
+body{background:linear-gradient(135deg,#fbf3f0 0%,#f8f4e8 32%,#eef4ef 67%,#f0ebf7 100%)}
+.top{background:rgba(255,252,246,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(177,139,85,.25)}
+.panel{box-shadow:0 16px 42px rgba(78,68,53,.09);border-color:rgba(190,169,135,.32)}
+h1,h2{color:#526b59}
+.primary{background:linear-gradient(100deg,#b95c60,#dc8c50,#d5b84d,#729779,#668bb5,#7771a8);box-shadow:0 6px 16px rgba(103,111,91,.16)}
+.primary:hover{filter:saturate(1.12);transform:translateY(-1px)}
+@media(max-width:560px){.hero-art{height:145px;background-position:35% center}}
