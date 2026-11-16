@@ -1,0 +1,98 @@
+const SUPABASE_URL = "https://tqnzepzfxqwqwtqpprem.supabase.co";
+const SUPABASE_KEY = "sb_publishable_1rucc2qibLHPVTrC3ajIRA_eJa-UZ53";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+const titles = [
+"O encontro comigo","Quem sou eu além dos meus papéis?","Meu universo emocional","O que meu corpo está tentando me dizer?","Minha história, minhas experiências","O que me faz sentir viva?","Minha primeira percepção",
+"O diálogo com meus pensamentos","O que está por trás das minhas emoções?","Minhas necessidades também importam","O peso de querer agradar","Minhas crenças sobre mim","Relações que me influenciam","O que preciso deixar de carregar?","Minha consciência em construção",
+"Como tenho tratado a mim mesma?","Reconhecendo minhas forças","Aprendendo a dizer não","Minha relação com o autocuidado","Perdoar não é esquecer","Celebrando minhas conquistas","Minha voz, minhas escolhas","Eu mereço receber cuidado",
+"A vida que desejo construir","Meus sonhos ainda têm espaço","Meus valores, minhas escolhas","Minha melhor versão possível","Meu compromisso comigo","Minha carta para o futuro","O florescer do meu eu"
+];
+const questions = [
+"Como estou chegando a este momento da minha vida? O que preciso oferecer a mim mesma hoje?",
+"Quais papéis desempenho e quais partes de mim desejo redescobrir?",
+"Que emoções têm aparecido com mais frequência? Posso nomeá-las sem julgamento?",
+"Quais sinais meu corpo costuma apresentar quando preciso de pausa ou cuidado?",
+"Que experiências me ensinaram algo importante sobre mim? Escolha apenas o que se sentir confortável em revisitar.",
+"O que desperta alegria, curiosidade ou sensação de presença em mim?",
+"Que percepção sobre mim ficou mais clara nesta primeira semana?",
+"Quais pensamentos têm ocupado mais espaço na minha mente?",
+"Que necessidade pode estar por trás de uma emoção que tenho sentido?",
+"Do que preciso neste momento e como posso comunicar isso?",
+"Em quais situações digo sim quando gostaria de dizer não?",
+"Que crença sobre mim gostaria de observar com mais gentileza?",
+"Quais relações me fortalecem? Quais limites podem me fazer bem?",
+"Existe alguma responsabilidade ou expectativa que posso deixar de carregar?",
+"O que compreendi sobre mim nestes últimos dias?",
+"Como falo comigo quando erro ou não consigo fazer tudo?",
+"Quais qualidades e recursos internos já me ajudaram em momentos difíceis?",
+"Que limite pequeno e respeitoso posso praticar?",
+"Que gesto simples de autocuidado cabe na minha rotina real?",
+"Existe algo que eu possa acolher sem precisar resolver ou perdoar agora?",
+"Quais pequenas conquistas merecem ser reconhecidas?",
+"Em que situação quero expressar minha opinião ou escolha com mais clareza?",
+"Como posso permitir que o cuidado também venha de outras pessoas?",
+"Que aspectos de uma vida significativa desejo cultivar?",
+"Que sonho ou desejo merece voltar a receber espaço?",
+"Quais valores quero que orientem minhas decisões?",
+"Como seria uma versão possível e humana de mim, sem exigir perfeição?",
+"Qual compromisso pequeno e realista quero assumir comigo?",
+"Que mensagem gostaria de deixar para mim mesma no futuro?",
+"O que mudou na forma como me percebo? Como quero continuar cuidando de mim?"
+];
+const phases = ["FASE 1 · EU ME RECONHEÇO","FASE 2 · EU ME COMPREENDO","FASE 3 · EU ME ACOLHO","FASE 4 · EU ME EXPANDO"];
+const cards = [
+["Acolhimento","Eu posso me receber exatamente como estou hoje. Não preciso ter todas as respostas para começar.","Coloque a mão no coração e respire com gentileza por um minuto."],
+["Identidade","Sou muito mais do que as funções que desempenho. Minha essência também merece espaço.","Escreva três palavras que representam quem você é."],
+["Escuta","Minhas emoções trazem informações. Posso escutá-las sem deixar que definam todo o meu caminho.","Dê um nome à emoção mais presente hoje."],
+["Presença","Meu corpo merece atenção, respeito e descanso. Posso escutar seus sinais com curiosidade.","Faça uma pausa e perceba sua respiração."],
+["História","Minha história faz parte de mim, mas não determina todas as possibilidades do meu futuro.","Reconheça uma qualidade que nasceu de uma experiência vivida."],
+["Vitalidade","Pequenos momentos de alegria também são importantes e merecem ser cultivados.","Reserve alguns minutos para algo que lhe faz bem."],
+["Consciência","Perceber é o primeiro passo para escolher com mais intenção.","Anote uma descoberta desta semana."],
+["Pensamentos","Nem todo pensamento é um fato. Posso observá-lo e escolher como responder.","Questione com carinho um pensamento rígido."],
+["Compreensão","Por trás de uma emoção pode existir uma necessidade pedindo atenção.","Pergunte a si mesma: do que preciso agora?"],
+["Prioridade","Minhas necessidades importam e podem ser consideradas com respeito.","Escolha uma necessidade e um passo possível para atendê-la."],
+["Limites","Dizer não a algo pode ser dizer sim ao que é importante para mim.","Pratique uma resposta honesta e respeitosa."],
+["Autoconfiança","Posso rever crenças antigas e construir uma conversa interna mais justa.","Escreva uma frase de apoio para si."],
+["Conexões","Relações saudáveis permitem respeito, reciprocidade e espaço para ser quem sou.","Aproxime-se de alguém com quem se sente segura."],
+["Leveza","Não preciso resolver tudo hoje. Posso reconhecer o que está ao meu alcance.","Escolha uma pequena coisa que pode esperar."],
+["Clareza","Estou aprendendo a me compreender um pouco melhor a cada dia.","Registre uma percepção que deseja levar adiante."],
+["Gentileza","A maneira como falo comigo também faz parte do meu cuidado.","Troque uma autocrítica por uma frase gentil."],
+["Força","Minhas forças podem ser discretas: persistir, pedir ajuda, recomeçar e descansar.","Lembre-se de uma situação que atravessou."],
+["Coragem","Coragem também é respeitar meus limites e agir no meu próprio ritmo.","Dê um pequeno passo que seja seguro para você."],
+["Autocuidado","Cuidar de mim não precisa ser complicado. O possível de hoje já conta.","Escolha um gesto de cuidado de cinco minutos."],
+["Acolhimento","Posso respeitar meu tempo. Não sou obrigada a resolver sentimentos difíceis agora.","Faça algo que transmita segurança e tranquilidade."],
+["Conquista","Cada passo merece reconhecimento, inclusive os que ninguém vê.","Anote três pequenas conquistas."],
+["Voz","Minha opinião tem valor. Posso me expressar com clareza e respeito.","Diga uma preferência com tranquilidade."],
+["Receber","Aceitar apoio também pode ser uma forma de autocuidado.","Permita-se receber uma ajuda ou gentileza."],
+["Visão","Posso construir uma vida alinhada ao que considero significativo.","Imagine um dia comum que represente bem-estar para você."],
+["Possibilidades","Meus desejos podem amadurecer e encontrar novos caminhos.","Anote um sonho e um primeiro passo pequeno."],
+["Valores","Meus valores podem ser uma bússola para minhas escolhas.","Escolha um valor para praticar hoje."],
+["Humanidade","Minha melhor versão não é perfeita: é possível, consciente e humana.","Escolha uma atitude coerente com quem deseja ser."],
+["Compromisso","Pequenos compromissos sustentáveis podem transformar minha rotina.","Defina um compromisso simples para esta semana."],
+["Futuro","Posso escrever meu futuro com esperança e também com flexibilidade.","Escreva uma mensagem para você daqui a seis meses."],
+["Florescer","Meu caminho continua. Posso reconhecer o que floresceu e seguir no meu tempo.","Celebre sua presença nesta jornada."]
+];
+let user=null, profile=null, day=1, saved={};
+function phaseIndex(d){return d<=7?0:d<=15?1:d<=23?2:3}
+function renderDay(){
+ $("phase").textContent=phases[phaseIndex(day)];$("dayLabel").textContent=`DIA ${day} DE 30`;$("dayTitle").textContent=titles[day-1];$("question").textContent=questions[day-1];$("cardNum").textContent=day;$("cardTitle").textContent=cards[day-1][0];$("cardText").textContent=cards[day-1][1];$("cardPractice").textContent="Prática: "+cards[day-1][2];
+ const e=saved[day];$("mood").value=e?.mood_score||3;$("body").value=e?.body_awareness||"";$("reflection").value=e?.reflection||"";$("next").value=e?.next_step||"";$("saveMsg").textContent=e?"Você já registrou este dia. Pode atualizar suas anotações.":"";
+ $("prevDay").disabled=day===1;$("nextDay").disabled=day===30;
+}
+async function refresh(){
+ const {data:p}=await db.from("caderno_profiles").select("*").eq("user_id",user.id).maybeSingle();profile=p;
+ $("hello").textContent=p?.full_name?`Olá, ${p.full_name.split(" ")[0]}`:"Bem-vinda à sua jornada";
+ $("adminTab").classList.toggle("hidden",p?.role!=="admin");
+ const {data}=await db.from("caderno_entries").select("*").eq("user_id",user.id).order("day_number");saved={};(data||[]).forEach(x=>saved[x.day_number]=x);
+ const count=Object.keys(saved).length;$("doneCount").textContent=count;$("progressBar").style.width=(count/30*100)+"%";renderDay();renderHistory();
+}
+function renderHistory(){const el=$("entries");el.innerHTML="";Object.values(saved).sort((a,b)=>a.day_number-b.day_number).forEach(e=>{const d=document.createElement("article");d.className="entry";d.innerHTML=`<strong>Dia ${e.day_number} · ${titles[e.day_number-1]}</strong><p>${escapeHtml(e.reflection||"Sem reflexão registrada.")}</p><small>${new Date(e.updated_at||e.created_at).toLocaleDateString("pt-BR")}</small>`;el.appendChild(d)});if(!el.children.length)el.textContent="Suas reflexões aparecerão aqui depois que você salvar o primeiro dia."}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("loginBtn").onclick=async()=>{ $("loginMsg").textContent="Verificando acesso...";const {data,error}=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error){$("loginMsg").textContent="Não foi possível entrar. Confira seu e-mail e senha ou fale com a terapeuta.";return}user=data.user;$("login").classList.add("hidden");$("app").classList.remove("hidden");$("logout").classList.remove("hidden");await refresh()};
+$("logout").onclick=async()=>{await db.auth.signOut();location.reload()};
+$("saveEntry").onclick=async()=>{const payload={user_id:user.id,day_number:day,mood_score:Number($("mood").value),body_awareness:$("body").value,reflection:$("reflection").value,gratitude:"",next_step:$("next").value,completed_at:new Date().toISOString()};const {error}=await db.from("caderno_entries").upsert(payload,{onConflict:"user_id,day_number"});if(error){$("saveMsg").textContent="Não foi possível salvar. Tente novamente.";return}await db.from("caderno_progress").upsert({user_id:user.id,day_number:day,completed_at:new Date().toISOString()},{onConflict:"user_id,day_number"});$("saveMsg").textContent="Seu registro foi salvo com carinho.";await refresh()};
+$("prevDay").onclick=()=>{day=Math.max(1,day-1);renderDay()};$("nextDay").onclick=()=>{day=Math.min(30,day+1);renderDay()};
+document.querySelectorAll(".tab").forEach(b=>b.onclick=async()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".tabview").forEach(x=>x.classList.add("hidden"));$(b.dataset.tab).classList.remove("hidden");if(b.dataset.tab==="admin")await loadAdmin()});
+async function loadAdmin(){const el=$("adminEntries");el.textContent="Carregando registros...";const {data,error}=await db.from("caderno_entries").select("*,caderno_profiles(full_name,email)").order("updated_at",{ascending:false}).limit(200);if(error){el.textContent="Acesso administrativo não configurado ou sem permissão.";return}el.innerHTML="";(data||[]).forEach(e=>{const a=document.createElement("article");a.className="entry";a.innerHTML=`<strong>${escapeHtml(e.caderno_profiles?.full_name||e.caderno_profiles?.email||"Participante")} · Dia ${e.day_number}</strong><p>${escapeHtml(e.reflection||"")}</p><small>${new Date(e.updated_at||e.created_at).toLocaleString("pt-BR")}</small>`;el.appendChild(a)});if(!el.children.length)el.textContent="Ainda não há registros."}
+db.auth.getSession().then(async({data})=>{if(data.session){user=data.session.user;$("login").classList.add("hidden");$("app").classList.remove("hidden");$("logout").classList.remove("hidden");await refresh()}});

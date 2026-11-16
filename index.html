@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#e9eadf"><title>Caderno do Eu | Ela em Expansão</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<header class="top"><div class="brand">ELA EM EXPANSÃO <small>Kari Maldonado · Terapeuta Integrativa</small></div><button id="logout" class="quiet hidden">Sair</button></header>
+<main>
+<section id="login" class="panel auth">
+  <p class="eyebrow">UMA JORNADA DE 30 DIAS</p><h1>Caderno do Eu</h1>
+  <p class="muted">Um espaço de pausa, escuta e autoconhecimento. Um dia de cada vez.</p>
+  <label>E-mail<input id="email" type="email" autocomplete="username" placeholder="seu e-mail"></label>
+  <label>Senha<input id="password" type="password" autocomplete="current-password" placeholder="sua senha"></label>
+  <button id="loginBtn" class="primary">Entrar na minha jornada</button>
+  <p id="loginMsg" class="notice">Seu acesso é fornecido pela terapeuta. Se ainda não recebeu seus dados, entre em contato com ela.</p>
+</section>
+<section id="app" class="hidden">
+  <div class="welcome"><div><p class="eyebrow">SEU ESPAÇO DE CUIDADO</p><h1 id="hello">Bem-vinda</h1><p class="muted">Permita-se florescer no seu tempo.</p></div><div class="counter"><strong id="doneCount">0</strong><span>de 30 dias</span></div></div>
+  <div class="progress"><div id="progressBar"></div></div>
+  <nav class="tabs"><button class="tab active" data-tab="journey">Minha jornada</button><button class="tab" data-tab="history">Meu diário</button><button class="tab hidden" id="adminTab" data-tab="admin">Painel da terapeuta</button></nav>
+  <section id="journey" class="tabview">
+    <article class="panel">
+      <div class="dayline"><span id="phase" class="pill">FASE 1 · EU ME RECONHEÇO</span><span id="dayLabel" class="muted">DIA 1 DE 30</span></div>
+      <h2 id="dayTitle">O encontro comigo</h2><p id="dayIntro" class="muted">Hoje é um convite para chegar até você, sem pressa e sem julgamentos.</p>
+      <h3>Reflexão do dia</h3><p id="question">Como estou chegando a este momento da minha vida?</p>
+      <label>Como estou me sentindo hoje?
+        <select id="mood"><option value="5">Muito bem</option><option value="4">Bem</option><option value="3" selected>Nem bem, nem mal</option><option value="2">Difícil</option><option value="1">Muito difícil</option></select>
+      </label>
+      <label>O que percebo no meu corpo?<textarea id="body" rows="2" placeholder="Sensações, energia, respiração..."></textarea></label>
+      <label>O que essa reflexão despertou em mim?<textarea id="reflection" rows="4" placeholder="Escreva livremente. Este espaço é seu."></textarea></label>
+      <label>Uma pequena atitude que quero praticar hoje<textarea id="next" rows="2" placeholder="Algo possível e gentil comigo."></textarea></label>
+      <button id="saveEntry" class="primary">Salvar meu dia</button><p id="saveMsg" class="notice"></p>
+    </article>
+    <article class="card-of-day"><p class="eyebrow">CARTA DA EXPANSÃO · DIA <span id="cardNum">1</span></p><h2 id="cardTitle">Acolhimento</h2><p id="cardText">Eu posso me receber exatamente como estou hoje. Não preciso ter todas as respostas para começar.</p><p class="muted" id="cardPractice">Prática: coloque a mão no coração e respire com gentileza por um minuto.</p></article>
+    <div class="daynav"><button id="prevDay" class="secondary">Dia anterior</button><button id="nextDay" class="secondary">Próximo dia</button></div>
+  </section>
+  <section id="history" class="tabview hidden"><article class="panel"><h2>Meu diário</h2><p class="muted">Suas anotações ficam privadas e vinculadas à sua conta.</p><div id="entries"></div></article></section>
+  <section id="admin" class="tabview hidden"><article class="panel"><h2>Acompanhamento das participantes</h2><p class="muted">Visualize registros compartilhados conforme o consentimento informado.</p><div id="adminEntries"></div></article></section>
+  <p class="disclaimer">O Caderno do Eu é uma ferramenta de reflexão e autocuidado. Não substitui acompanhamento psicológico, médico ou outros cuidados profissionais. Você pode pular qualquer atividade que gere desconforto.</p>
+</section>
+</main><footer>© ELA EM EXPANSÃO · Kari Maldonado</footer>
+<script src="app.js"></script>
+</body></html>
