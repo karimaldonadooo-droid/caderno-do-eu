@@ -75,31 +75,76 @@ const cards = [
 ];
 let user=null, profile=null, day=1, saved={}, chosenCard=null, cardNotes={}, assessments={baseline:null,final:null};
 const assessmentItems=[
- {dimension:"Emoções",items:["Consigo reconhecer e nomear o que estou sentindo.","Consigo acolher minhas emoções sem me julgar imediatamente."]},
- {dimension:"Autoestima",items:["Reconheço qualidades e capacidades em mim.","Trato a mim mesma com respeito e gentileza."]},
- {dimension:"Limites e escolhas",items:["Consigo perceber e expressar minhas necessidades.","Sinto que posso fazer escolhas respeitando meus limites."]},
- {dimension:"Autocuidado e corpo",items:["Percebo os sinais do meu corpo e procuro respeitá-los.","Consigo incluir atitudes de cuidado na minha rotina."]},
- {dimension:"Propósito e perspectivas",items:["Tenho clareza sobre valores que são importantes para mim.","Consigo perceber desejos ou possibilidades que me motivam."]}
+ {dimension:"Emoções",items:["Consigo reconhecer e nomear o que estou sentindo.","Consigo acolher minhas emoções sem me julgar imediatamente.","Consigo compreender o que pode estar despertando minhas emoções.","Permito-me sentir sem julgar ou reprimir imediatamente o que sinto."]},
+ {dimension:"Autoestima",items:["Reconheço qualidades e capacidades em mim.","Trato a mim mesma com respeito e gentileza.","Sinto que tenho valor, independentemente da aprovação das outras pessoas.","Sinto-me merecedora de amor, respeito e coisas boas."]},
+ {dimension:"Limites e escolhas",items:["Consigo perceber e expressar minhas necessidades.","Sinto que posso fazer escolhas respeitando meus limites.","Tenho facilidade para dizer não quando algo ultrapassa meus limites.","Consigo expressar minhas opiniões e vontades com clareza."]},
+ {dimension:"Autocuidado e corpo",items:["Percebo os sinais do meu corpo e procuro respeitá-los.","Consigo incluir atitudes de cuidado na minha rotina.","Consigo reservar momentos para cuidar de mim sem sentir culpa.","Respeito meu corpo e procuro acolher suas necessidades."]},
+ {dimension:"Propósito e perspectivas",items:["Tenho clareza sobre valores que são importantes para mim.","Consigo perceber desejos ou possibilidades que me motivam.","Consigo reconhecer desejos e sonhos que são importantes para mim.","Tenho esperança na possibilidade de construir uma vida mais alinhada comigo mesma."]}
 ];
-const scaleLabels=["1 · Ainda não me reconheço nisso","2 · Raramente","3 · Às vezes","4 · Muitas vezes","5 · Isso me representa bastante"];
-function assessmentMarkup(){return assessmentItems.map((group,gi)=>`<section class="assessment-group"><h3>${group.dimension}</h3>${group.items.map((q,qi)=>{const id=`a${gi*2+qi}`;return `<fieldset class="assessment-question"><legend>${q}</legend><div class="scale-options">${scaleLabels.map((label,i)=>`<label class="scale-option"><input type="radio" name="${id}" value="${i+1}"><span>${i+1}</span><small>${i===0?"Discordo":i===4?"Concordo":""}</small></label>`).join("")}</div></fieldset>`}).join("")}</section>`).join("")}
+const assessmentOptions=[
+ {value:1,label:"Concordo",score:3},
+ {value:2,label:"Discordo",score:1},
+ {value:3,label:"Mais ou menos",score:2},
+ {value:4,label:"Não tenho certeza",score:null}
+];
+function assessmentMarkup(){
+ return assessmentItems.map((group,gi)=>
+  `<section class="assessment-group"><h3>${group.dimension}</h3>`+
+  group.items.map((q,qi)=>{
+   const id=`a${gi*4+qi}`;
+   return `<fieldset class="assessment-question"><legend>${q}</legend><div class="scale-options scale-four">`+
+    assessmentOptions.map(o=>`<label class="scale-option"><input type="radio" name="${id}" value="${o.value}"><span>${o.label}</span></label>`).join("")+
+    `</div></fieldset>`;
+  }).join("")+
+  `</section>`
+ ).join("");
+}
 function showAssessment(stage){
- const gate=$("assessmentGate"),shell=$("journeyShell");gate.classList.remove("hidden");shell.classList.add("hidden");
+ const gate=$("assessmentGate"),shell=$("journeyShell");
+ gate.classList.remove("hidden");shell.classList.add("hidden");
  $("assessmentTitle").textContent=stage==="baseline"?"Antes de começar, vamos olhar para você?":"Você chegou ao fim dos 30 dias. Como se percebe agora?";
- $("assessmentIntro").textContent=stage==="baseline"?"Responda pensando em como você se sente hoje. Não existe resposta certa ou errada; esta é apenas sua percepção inicial.":"Responda às mesmas perguntas considerando como você se percebe agora. Compare com seu ponto de partida com gentileza, sem cobrança por uma mudança específica.";
+ $("assessmentIntro").textContent="Leia cada afirmação e escolha a resposta que mais combina com o que você sente hoje. Não existe resposta certa ou errada.";
  $("assessmentQuestions").innerHTML=assessmentMarkup();
- if(assessments[stage]?.answers){Object.entries(assessments[stage].answers).forEach(([k,v])=>{const input=document.querySelector(`input[name="${k}"][value="${v}"]`);if(input)input.checked=true})}
+ if(assessments[stage]?.answers){
+  Object.entries(assessments[stage].answers).forEach(([k,v])=>{
+   const input=document.querySelector(`input[name="${k}"][value="${v}"]`);
+   if(input)input.checked=true;
+  });
+ }
  $("assessmentMsg").textContent="";
  $("saveAssessment").onclick=async()=>{
-  const answers={};for(let i=0;i<10;i++){const chosen=document.querySelector(`input[name="a${i}"]:checked`);if(!chosen){$("assessmentMsg").textContent="Responda às 10 afirmações para continuar. Se alguma não fizer sentido, escolha a opção que mais se aproxima da sua percepção.";return}answers[`a${i}`]=Number(chosen.value)}
-  const scores={};assessmentItems.forEach((g,gi)=>{scores[g.dimension]=(answers[`a${gi*2}`]+answers[`a${gi*2+1}`])/2});
-  $("saveAssessment").disabled=true;$("assessmentMsg").textContent="Salvando sua avaliação...";
-  const {error}=await db.from("caderno_assessments").upsert({user_id:user.id,stage,answers,dimension_scores:scores,completed_at:new Date().toISOString()},{onConflict:"user_id,stage"});
+  const answers={};
+  for(let i=0;i<20;i++){
+   const chosen=document.querySelector(`input[name="a${i}"]:checked`);
+   if(!chosen){
+    $("assessmentMsg").textContent=`Falta responder à afirmação ${i+1}.`;
+    document.querySelector(`input[name="a${i}"]`)?.closest(".assessment-question")?.scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+   }
+   answers[`a${i}`]=Number(chosen.value);
+  }
+  const scores={};
+  assessmentItems.forEach((g,gi)=>{
+   const valid=g.items.map((_,qi)=>assessmentOptions.find(o=>o.value===answers[`a${gi*4+qi}`]).score).filter(v=>v!==null);
+   scores[g.dimension]=valid.length?valid.reduce((a,b)=>a+b,0)/valid.length:null;
+  });
+  $("saveAssessment").disabled=true;
+  $("assessmentMsg").textContent="Salvando sua avaliação...";
+  const {error}=await db.from("caderno_assessments").upsert({
+   user_id:user.id,stage,answers,dimension_scores:scores,completed_at:new Date().toISOString()
+  },{onConflict:"user_id,stage"});
   $("saveAssessment").disabled=false;
-  if(error){$("assessmentMsg").textContent="Não foi possível salvar. Tente novamente ou avise a terapeuta.";return}
-  assessments[stage]={answers,dimension_scores:scores};gate.classList.add("hidden");shell.classList.remove("hidden");renderAssessmentChart();
+  if(error){
+   $("assessmentMsg").textContent="Não foi possível salvar. Tente novamente ou avise a terapeuta.";
+   return;
+  }
+  assessments[stage]={answers,dimension_scores:scores};
+  gate.classList.add("hidden");shell.classList.remove("hidden");
+  renderAssessmentChart();
  };
 }
+function assessmentMarkup(){return assessmentItems.map((group,gi)=>`<section class="assessment-group"><h3>${group.dimension}</h3>${group.items.map((q,qi)=>{const id=`a${gi*2+qi}`;return `<fieldset class="assessment-question"><legend>${q}</legend><div class="scale-options">${scaleLabels.map((label,i)=>`<label class="scale-option"><input type="radio" name="${id}" value="${i+1}"><span>${i+1}</span><small>${i===0?"Discordo":i===4?"Concordo":""}</small></label>`).join("")}</div></fieldset>`}).join("")}</section>`).join("")}
+
 function phaseIndex(d){return d<=7?0:d<=15?1:d<=23?2:3}
 function renderDay(){
  document.body.dataset.phase=String(phaseIndex(day)+1);
@@ -140,12 +185,27 @@ $("saveCardReflection").onclick=async()=>{
  if(!error)await refresh();
 };
 function renderAssessmentChart(){
- const canvas=$("assessmentChart");if(!canvas)return;const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
+ const canvas=$("assessmentChart");
+ if(!canvas)return;
+ const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;
+ ctx.clearRect(0,0,w,h);
  const names=assessmentItems.map(x=>x.dimension),left=170,right=28,top=24,bottom=24,plotW=w-left-right,rowH=(h-top-bottom)/5;
  ctx.font="13px Arial";ctx.fillStyle="#687565";ctx.strokeStyle="#e5e6dc";
- for(let v=1;v<=5;v++){const x=left+(v-1)*plotW/4;ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,h-bottom);ctx.stroke();ctx.fillText(String(v),x-4,h-6)}
- names.forEach((name,i)=>{const y=top+i*rowH+rowH/2;ctx.fillStyle="#596657";ctx.fillText(name,left-155,y+4);const a=assessments.baseline?.dimension_scores?.[name];const b=assessments.final?.dimension_scores?.[name];if(a!=null){ctx.fillStyle="#b48b55";ctx.fillRect(left,y-13,(a-1)*plotW/4,9)}if(b!=null){ctx.fillStyle="#729779";ctx.fillRect(left,y+1,(b-1)*plotW/4,9)}});
- const note=$("assessmentChartNote");if(note)note.textContent=assessments.final?"Comparação das suas respostas no início e ao final da jornada.":"Este é seu ponto de partida. A comparação final será mostrada quando você concluir os 30 dias e responder novamente.";
+ for(let v=1;v<=3;v++){
+  const x=left+(v-1)*plotW/2;
+  ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,h-bottom);ctx.stroke();
+  ctx.fillText(String(v),x-4,h-6);
+ }
+ names.forEach((name,i)=>{
+  const y=top+i*rowH+rowH/2;
+  ctx.fillStyle="#596657";ctx.fillText(name,left-155,y+4);
+  const a=assessments.baseline?.dimension_scores?.[name];
+  const b=assessments.final?.dimension_scores?.[name];
+  if(a!=null){ctx.fillStyle="#b48b55";ctx.fillRect(left,y-13,(a-1)*plotW/2,9);}
+  if(b!=null){ctx.fillStyle="#729779";ctx.fillRect(left,y+1,(b-1)*plotW/2,9);}
+ });
+ const note=$("assessmentChartNote");
+ if(note)note.textContent=assessments.final?"Comparação das suas respostas no início e ao final da jornada.":"Este é seu ponto de partida. A comparação final será mostrada quando você concluir os 30 dias e responder novamente.";
 }
 function renderChart(){
  const canvas=$("moodChart");if(!canvas)return;const ctx=canvas.getContext("2d"),w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
