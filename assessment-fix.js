@@ -1,7 +1,7 @@
-/* Caderno do Eu — avaliação corrigida: 20 afirmações e quatro respostas */
+/* Caderno do Eu — avaliação integrada: 20 afirmações, quatro respostas */
 (function () {
-  if (window.__cadernoAssessmentV3) return;
-  window.__cadernoAssessmentV3 = true;
+  if (window.__cadernoAssessmentV4) return;
+  window.__cadernoAssessmentV4 = true;
 
   const extra = [
     ["Emoções", ["Consigo compreender o que pode estar despertando minhas emoções.", "Permito-me sentir sem julgar ou reprimir imediatamente o que sinto."]],
@@ -10,7 +10,6 @@
     ["Autocuidado e corpo", ["Consigo reservar momentos para cuidar de mim sem sentir culpa.", "Respeito meu corpo e procuro acolher suas necessidades."]],
     ["Propósito e perspectivas", ["Consigo reconhecer desejos e sonhos que são importantes para mim.", "Tenho esperança na possibilidade de construir uma vida mais alinhada comigo mesma."]]
   ];
-
   extra.forEach((g, i) => {
     if (assessmentItems[i].items.length === 2) assessmentItems[i].items.push(...g[1]);
   });
@@ -34,9 +33,23 @@
     ).join("");
   };
 
+  function removeLegacyDuplicates() {
+    const gates = Array.from(document.querySelectorAll('[id="assessmentGate"]'));
+    const modernGate = gates.find(g => g.querySelector(".scale-four"));
+    if (modernGate) {
+      gates.filter(g => g !== modernGate).forEach(g => g.remove());
+      modernGate.querySelectorAll(".assessment-group").forEach(group => {
+        if (group.querySelector(".scale-options:not(.scale-four)")) group.remove();
+      });
+    }
+  }
+
   window.showAssessment = function (stage) {
-    const gate = document.getElementById("assessmentGate");
+    const gates = Array.from(document.querySelectorAll('[id="assessmentGate"]'));
+    const gate = gates[0] || document.getElementById("assessmentGate");
     const shell = document.getElementById("journeyShell");
+    if (!gate) return;
+    gates.slice(1).forEach(g => g.remove());
     gate.classList.remove("hidden");
     shell.classList.add("hidden");
     gate.style.display = "block";
@@ -49,7 +62,6 @@
       "Responda pensando em como você se sente hoje. Não existe resposta certa ou errada. Se estiver em dúvida, escolha “Não tenho certeza”.";
     document.getElementById("assessmentQuestions").innerHTML = window.assessmentMarkup();
 
-    // Respostas antigas pertencem à escala anterior e não são reaproveitadas.
     const previous = assessments[stage]?.answers || {};
     if (Object.keys(previous).length >= 20) {
       Object.entries(previous).forEach(([key, value]) => {
@@ -73,16 +85,12 @@
         }
         answers[`a${i}`] = Number(selected.value);
       }
-
       const scores = {};
       assessmentItems.forEach((g, gi) => {
-        const valid = g.items.map((_, qi) => {
-          const selected = options.find(o => o.value === answers[`a${gi * 4 + qi}`]);
-          return selected ? selected.score : null;
-        }).filter(score => score !== null);
+        const valid = g.items.map((_, qi) => options.find(o => o.value === answers[`a${gi * 4 + qi}`])?.score ?? null)
+          .filter(score => score !== null);
         scores[g.dimension] = valid.length ? valid.reduce((a, b) => a + b, 0) / valid.length : null;
       });
-
       button.disabled = true;
       message.textContent = "Salvando sua avaliação...";
       const { error } = await db.from("caderno_assessments").upsert({
@@ -93,7 +101,6 @@
         message.textContent = "Não foi possível salvar. Tente novamente ou avise a terapeuta.";
         return;
       }
-
       assessments[stage] = { answers, dimension_scores: scores };
       gate.classList.add("hidden");
       gate.style.display = "";
@@ -102,6 +109,7 @@
       document.body.classList.remove("assessment-open");
       window.renderAssessmentChart();
     };
+    removeLegacyDuplicates();
   };
 
   window.renderAssessmentChart = function () {
@@ -111,9 +119,7 @@
     ctx.clearRect(0, 0, w, h);
     const names = assessmentItems.map(x => x.dimension);
     const left = 190, right = 28, top = 24, bottom = 28, plotW = w - left - right, rowH = (h - top - bottom) / names.length;
-    ctx.font = "13px Arial";
-    ctx.fillStyle = "#687565";
-    ctx.strokeStyle = "#e5e6dc";
+    ctx.font = "13px Arial"; ctx.fillStyle = "#687565"; ctx.strokeStyle = "#e5e6dc";
     ["Discordo", "Mais ou menos", "Concordo"].forEach((label, i) => {
       const x = left + i * plotW / 2;
       ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, h - bottom); ctx.stroke();
@@ -121,10 +127,8 @@
     });
     names.forEach((name, i) => {
       const y = top + i * rowH + rowH / 2;
-      ctx.fillStyle = "#596657";
-      ctx.fillText(name, left - 175, y + 4);
-      const a = assessments.baseline?.dimension_scores?.[name];
-      const b = assessments.final?.dimension_scores?.[name];
+      ctx.fillStyle = "#596657"; ctx.fillText(name, left - 175, y + 4);
+      const a = assessments.baseline?.dimension_scores?.[name], b = assessments.final?.dimension_scores?.[name];
       if (a != null) { ctx.fillStyle = "#b48b55"; ctx.fillRect(left, y - 13, Math.max(0, (a - 1) * plotW / 2), 9); }
       if (b != null) { ctx.fillStyle = "#729779"; ctx.fillRect(left, y + 1, Math.max(0, (b - 1) * plotW / 2), 9); }
     });
@@ -134,12 +138,9 @@
       : "Este é seu ponto de partida. A comparação final aparecerá quando você concluir os 30 dias e responder novamente.";
   };
 
-  const originalRefresh = window.refresh;
-  window.refresh = async function () {
-    await originalRefresh();
-    const incomplete = assessments.baseline && Object.keys(assessments.baseline.answers || {}).length < 20;
-    if (incomplete) window.showAssessment("baseline");
-  };
+  // Remove apenas painéis de avaliação duplicados da versão anterior.
+  const observer = new MutationObserver(removeLegacyDuplicates);
+  observer.observe(document.documentElement, { childList: true, subtree: true });
 
   const style = document.createElement("style");
   style.textContent = `
@@ -160,4 +161,5 @@
     }
   `;
   document.head.appendChild(style);
+  removeLegacyDuplicates();
 })();
