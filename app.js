@@ -114,7 +114,7 @@ async function refresh(){
  const {data}=await db.from("caderno_entries").select("*").eq("user_id",user.id).order("day_number");saved={};(data||[]).forEach(x=>saved[x.day_number]=x);
  const {data:assessData}=await db.from("caderno_assessments").select("stage,answers,dimension_scores,completed_at").eq("user_id",user.id);assessments={baseline:null,final:null};(assessData||[]).forEach(a=>assessments[a.stage]=a);
  const count=Object.keys(saved).length;$("doneCount").textContent=count;$("progressBar").style.width=(count/30*100)+"%";renderDay();renderHistory();renderDeck();renderChart();renderAssessmentChart();
- if(!assessments.baseline)showAssessment("baseline");else if(count>=30&&!assessments.final)showAssessment("final");else{$("assessmentGate").classList.add("hidden");$("journeyShell").classList.remove("hidden")}
+ if(!assessments.baseline)window.showAssessment("baseline");else if(count>=30&&!assessments.final)window.showAssessment("final");else{$("assessmentGate").classList.add("hidden");$("journeyShell").classList.remove("hidden")}
 }
 function renderHistory(){const el=$("entries");el.innerHTML="";Object.values(saved).sort((a,b)=>a.day_number-b.day_number).forEach(e=>{const d=document.createElement("article");d.className="entry";d.innerHTML=`<strong>Dia ${e.day_number} · ${titles[e.day_number-1]}</strong><p>${escapeHtml(e.reflection||"Sem reflexão registrada.")}</p><small>${new Date(e.updated_at||e.created_at).toLocaleDateString("pt-BR")}</small>`;el.appendChild(d)});if(!el.children.length)el.textContent="Suas reflexões aparecerão aqui depois que você salvar o primeiro dia."}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
