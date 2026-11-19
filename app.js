@@ -143,7 +143,6 @@ function showAssessment(stage){
   renderAssessmentChart();
  };
 }
-function assessmentMarkup(){return assessmentItems.map((group,gi)=>`<section class="assessment-group"><h3>${group.dimension}</h3>${group.items.map((q,qi)=>{const id=`a${gi*2+qi}`;return `<fieldset class="assessment-question"><legend>${q}</legend><div class="scale-options">${scaleLabels.map((label,i)=>`<label class="scale-option"><input type="radio" name="${id}" value="${i+1}"><span>${i+1}</span><small>${i===0?"Discordo":i===4?"Concordo":""}</small></label>`).join("")}</div></fieldset>`}).join("")}</section>`).join("")}
 
 function phaseIndex(d){return d<=7?0:d<=15?1:d<=23?2:3}
 function renderDay(){
